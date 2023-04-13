@@ -1,0 +1,17 @@
+2. KURIAMAS NAUJAS PROJEKTAS
+2.1. Sukurti db 'employee' lentelę:
+
+    id;
+    name;
+    surname;
+    salary.
+
+2.2. Sukurti Employee klasę.
+2.3. Pridėti sql-connector-java failą į projektą.
+2.4. Parašyti kodą, kurio pagalba sukurtumėte naują įrašą db.
+2.5. Parašyti kodą, kurio pagalba atspausdintumėte į terminalą visus įrašus iš db.
+2.6. Atlikti paiešką pagal darbuotojo vardą.
+2.7. Paredaguoti esamą įrašą.
+2.8. Ištrinti esamą įrašą pagal įrašo id.
+2.9. Paskaičiuoti kiek yra įrašų, kurių vardas yra "Jonas".
+2.10. Parašyti JUnit CRUD testus DAO klasei. 
