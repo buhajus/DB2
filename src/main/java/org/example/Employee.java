@@ -22,6 +22,10 @@ public class Employee {
         this.salary = salary;
     }
 
+    public Employee(int id) {
+
+    }
+
     public int getId() {
         return id;
     }

@@ -41,7 +41,7 @@ public class EmployeeDAO {
 
                 employees.add(new Employee(id, name, surname, salary));
             }
-            System.out.println("List of all employees:");
+
             connection.close();
             statement.close();
 
