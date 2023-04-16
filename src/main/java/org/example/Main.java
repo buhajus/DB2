@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) {
 
-        Employee employee = new Employee(999, "Test", "7test7", 666.666);
+        Employee employee = new Employee(99, "Test", "7test7", 666.666);
 
          EmployeeDAO.create(employee);
         EmployeeDAO.update(employee, 2);
