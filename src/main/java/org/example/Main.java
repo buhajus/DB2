@@ -30,7 +30,7 @@ public class Main {
 
         //   EmployeeDAO.delete(5);
 
-        System.out.println("Search result with employee " + search + ": " + EmployeeDAO.countEmployeesByName(search));
+        System.out.println("Search results with employee " + search + ": " + EmployeeDAO.countEmployeesByName(search));
 
     }
 }
