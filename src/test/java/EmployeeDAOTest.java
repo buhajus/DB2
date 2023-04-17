@@ -25,19 +25,23 @@ public class EmployeeDAOTest {
         //   expectedPositiveResult = true;
         // expectedNegativeResult = false;
 
-        Employee expectedCreatePositiveResult = new Employee(999, "Test", "7test7", 666.666);
+         expectedCreatePositiveResult = new Employee(19, "Test", "7test7", 666.666);
+       // System.out.println( expectedCreatePositiveResult.getId());
 
         //dao.create(expectedCreatePositiveResult);
 
-        Employee actualCreatePositiveResult = findById(expectedCreatePositiveResult.getId());
-
+         actualCreatePositiveResult = findById(expectedCreatePositiveResult.getId());
+      System.out.println(actualCreatePositiveResult.getId());
+        System.out.println(actualCreatePositiveResult.getName());
+        System.out.println(actualCreatePositiveResult.getSurname());
+        System.out.println(actualCreatePositiveResult.getSalary());
 
         //   Employee actualCreatePositiveResult = expectedCreatePositiveResult.getId();
 
         //   actualCreatePositiveResult = new Employee(999, "Test", "7test7", 666.666);
 
     //    actualCreatePositiveResult = actualCreateRecordPositive(5);
-        System.out.println(actualCreatePositiveResult);
+       // System.out.println(actualCreatePositiveResult);
 
     }
 
@@ -135,21 +139,21 @@ public class EmployeeDAOTest {
 
     public Employee findById(int id) {
         String query = "SELECT * FROM employee WHERE id = ?";
-        Employee employee = null;
+        Employee employee = new Employee();
         try {
             Connection connection = DriverManager.getConnection(URL, "root", "");
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
 
-            if (resultSet.next()) {
-                employee = new Employee(resultSet.getInt("id"),
-                        resultSet.getString("name"),
-                        resultSet.getString("surname"),
-                        resultSet.getDouble("salary"));
+            while (resultSet.next()) {
+                 employee = new Employee(resultSet.getInt("id"),
+                                        resultSet.getString("name"),
+                                        resultSet.getString("surname"),
+                                        resultSet.getDouble("salary"));
             }
         } catch (SQLException e) {
-            System.out.println();
+            System.out.println("Error   "+ e.getMessage());
         }
 
         return employee;
