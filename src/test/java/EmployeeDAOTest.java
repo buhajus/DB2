@@ -31,10 +31,6 @@ public class EmployeeDAOTest {
         //dao.create(expectedCreatePositiveResult);
 
          actualCreatePositiveResult = findById(expectedCreatePositiveResult.getId());
-      System.out.println(actualCreatePositiveResult.getId());
-        System.out.println(actualCreatePositiveResult.getName());
-        System.out.println(actualCreatePositiveResult.getSurname());
-        System.out.println(actualCreatePositiveResult.getSalary());
 
         //   Employee actualCreatePositiveResult = expectedCreatePositiveResult.getId();
 
@@ -58,7 +54,7 @@ public class EmployeeDAOTest {
     @Test
     public void selectAllFromDbPositiveTest() {
         Assert.assertTrue(EmployeeDAO.selectAllFromDb().size() > 0);
-        System.out.println(EmployeeDAO.selectAllFromDb().size());
+      //  System.out.println(EmployeeDAO.selectAllFromDb().size());
     }
 
     @Test
