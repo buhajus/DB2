@@ -5,39 +5,25 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.naming.ldap.PagedResultsControl;
 import java.sql.*;
-import java.util.ArrayList;
 
 public class EmployeeDAOTest {
     private static final String URL = "jdbc:mysql://localhost:3306/db";
-    private EmployeeDAO dao;
 
-    //boolean expectedPositiveResult;
 
-    //boolean expectedNegativeResult;
-
-     Employee expectedCreatePositiveResult;
-      Employee actualCreatePositiveResult;
+    Employee expectedInsertIntoDbPositiveResult;
+    Employee actualInsertIntoDbPositiveResult;
+    Employee expectedGetFromDbPositiveResult;
+    Employee actualGetFromDbPositiveResult;
 
     @Before
     public void setup() {
-        //   expectedPositiveResult = true;
-        // expectedNegativeResult = false;
+        expectedGetFromDbPositiveResult = new Employee(19, "Test", "7test7", 666.666);
+        actualGetFromDbPositiveResult = findById(expectedGetFromDbPositiveResult.getId());
 
-         expectedCreatePositiveResult = new Employee(19, "Test", "7test7", 666.666);
-       // System.out.println( expectedCreatePositiveResult.getId());
+        expectedInsertIntoDbPositiveResult = actualInsertIntoDbRecordPositive(expectedGetFromDbPositiveResult);
+        actualInsertIntoDbPositiveResult = findById(expectedInsertIntoDbPositiveResult.getId());
 
-        //dao.create(expectedCreatePositiveResult);
-
-         actualCreatePositiveResult = findById(expectedCreatePositiveResult.getId());
-
-        //   Employee actualCreatePositiveResult = expectedCreatePositiveResult.getId();
-
-        //   actualCreatePositiveResult = new Employee(999, "Test", "7test7", 666.666);
-
-    //    actualCreatePositiveResult = actualCreateRecordPositive(5);
-       // System.out.println(actualCreatePositiveResult);
 
     }
 
@@ -54,7 +40,7 @@ public class EmployeeDAOTest {
     @Test
     public void selectAllFromDbPositiveTest() {
         Assert.assertTrue(EmployeeDAO.selectAllFromDb().size() > 0);
-      //  System.out.println(EmployeeDAO.selectAllFromDb().size());
+        //  System.out.println(EmployeeDAO.selectAllFromDb().size());
     }
 
     @Test
@@ -65,14 +51,26 @@ public class EmployeeDAOTest {
 
     @Test
     public void objCreateRecordPositiveTest() {
-        objCreateRecordPositive(expectedCreatePositiveResult, actualCreatePositiveResult);
+        objCreateRecordPositive(expectedGetFromDbPositiveResult, actualGetFromDbPositiveResult);
 
+    }
+
+    @Test
+    public void insertIntoDbPositiveTest(){
+        objInsertIntoDbPostive(expectedInsertIntoDbPositiveResult,actualInsertIntoDbPositiveResult);
+    }
+
+    public void objInsertIntoDbPostive(Employee expectedInsertIntoDbPositiveResult, Employee actualInsertIntoDbPositiveResult){
+        Assert.assertEquals(expectedInsertIntoDbPositiveResult.getId(),actualInsertIntoDbPositiveResult.getId());
+        Assert.assertEquals(expectedInsertIntoDbPositiveResult.getName(),actualInsertIntoDbPositiveResult.getName());
+        Assert.assertEquals(expectedInsertIntoDbPositiveResult.getSurname(),expectedInsertIntoDbPositiveResult.getSurname());
+        Assert.assertEquals(expectedInsertIntoDbPositiveResult.getSalary(),actualInsertIntoDbPositiveResult.getSalary(),2);
     }
 
     public void objCreateRecordPositive(Employee expectedCreatePositiveResult, Employee actualCreatePositiveResult) {
         Assert.assertEquals(expectedCreatePositiveResult.getId(), actualCreatePositiveResult.getId());
-         Assert.assertEquals(expectedCreatePositiveResult.getName(), actualCreatePositiveResult.getName());
-         Assert.assertEquals(expectedCreatePositiveResult.getSurname(), actualCreatePositiveResult.getSurname());
+        Assert.assertEquals(expectedCreatePositiveResult.getName(), actualCreatePositiveResult.getName());
+        Assert.assertEquals(expectedCreatePositiveResult.getSurname(), actualCreatePositiveResult.getSurname());
         Assert.assertEquals(expectedCreatePositiveResult.getSalary(), actualCreatePositiveResult.getSalary(), 2);
     }
 
@@ -103,33 +101,25 @@ public class EmployeeDAOTest {
         return true;
     }
 
-    public Employee actualCreateRecordPositive(int idP) {
-        String query = "SELECT * FROM employee WHERE id = ?";
-        Employee employee = null;
+    public Employee actualInsertIntoDbRecordPositive(Employee employee) {
+        String query = "INSERT INTO employee VALUES (?,?,?,?)";
+
         try {
 
             Connection connection = DriverManager.getConnection(URL, "root", "");
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setInt(1, idP);
+            statement.setInt(1, employee.getId());
+            statement.setString(2, employee.getName());
+            statement.setString(3, employee.getSurname());
+            statement.setDouble(4, employee.getSalary());
+            statement.executeUpdate();
 
-            ResultSet resultSet = statement.executeQuery();
-
-            while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                String name = resultSet.getString("name");
-                String surname = resultSet.getString("surname");
-                double salary = resultSet.getDouble("salary");
-
-                employee = new Employee(id, name, surname, salary);
-
-            }
-
+            connection.close();
+            statement.close();
 
         } catch (SQLException e) {
 
         }
-
-
         return employee;
     }
 
@@ -143,13 +133,13 @@ public class EmployeeDAOTest {
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                 employee = new Employee(resultSet.getInt("id"),
-                                        resultSet.getString("name"),
-                                        resultSet.getString("surname"),
-                                        resultSet.getDouble("salary"));
+                employee = new Employee(resultSet.getInt("id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("surname"),
+                        resultSet.getDouble("salary"));
             }
         } catch (SQLException e) {
-            System.out.println("Error   "+ e.getMessage());
+            System.out.println("Error   " + e.getMessage());
         }
 
         return employee;
