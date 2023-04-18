@@ -13,16 +13,38 @@ public class EmployeeDAOTest {
 
     Employee expectedInsertIntoDbPositiveResult;
     Employee actualInsertIntoDbPositiveResult;
+
+    Employee expectedInsertIntoDbNegativeResult;
+    Employee actualInsertIntoDbNegativeResult;
+
+
     Employee expectedGetFromDbPositiveResult;
     Employee actualGetFromDbPositiveResult;
+
+    Employee expectedGetFromDbNegativeResult;
+    Employee actualGetFromDbNegativeResult;
+
+    Employee expectedDeleteRecordFromDbPositiveResult;
+    Employee actualDeleteRecordFromDbPositiveResult;
+
 
     @Before
     public void setup() {
         expectedGetFromDbPositiveResult = new Employee(19, "Test", "7test7", 666.666);
         actualGetFromDbPositiveResult = findById(expectedGetFromDbPositiveResult.getId());
 
+        expectedGetFromDbNegativeResult = new Employee(109, "Test", "7test9", 666.6686);
+        actualGetFromDbNegativeResult = actualGetFromDbPositiveResult;
+
         expectedInsertIntoDbPositiveResult = actualInsertIntoDbRecordPositive(expectedGetFromDbPositiveResult);
         actualInsertIntoDbPositiveResult = findById(expectedInsertIntoDbPositiveResult.getId());
+
+        expectedInsertIntoDbNegativeResult = new Employee(555, "TT", "ccc", 566);
+        actualInsertIntoDbNegativeResult = actualInsertIntoDbPositiveResult;
+
+        expectedDeleteRecordFromDbPositiveResult = new Employee(19, "Test", "7test7", 666.666);
+        deleteById(expectedDeleteRecordFromDbPositiveResult.getId());
+        actualDeleteRecordFromDbPositiveResult = findById(expectedDeleteRecordFromDbPositiveResult.getId());
 
 
     }
@@ -50,28 +72,76 @@ public class EmployeeDAOTest {
     }
 
     @Test
-    public void objCreateRecordPositiveTest() {
-        objCreateRecordPositive(expectedGetFromDbPositiveResult, actualGetFromDbPositiveResult);
+    public void objGetRecordFromDbPositiveTest() {
+        objGetRecordFromDbPositive(expectedGetFromDbPositiveResult, actualGetFromDbPositiveResult);
 
     }
 
     @Test
-    public void insertIntoDbPositiveTest(){
-        objInsertIntoDbPostive(expectedInsertIntoDbPositiveResult,actualInsertIntoDbPositiveResult);
+    public void objGetRecordFromDbNegativeTest() {
+        objGetRecordFromDbNegative(expectedGetFromDbNegativeResult, actualGetFromDbNegativeResult);
     }
 
-    public void objInsertIntoDbPostive(Employee expectedInsertIntoDbPositiveResult, Employee actualInsertIntoDbPositiveResult){
-        Assert.assertEquals(expectedInsertIntoDbPositiveResult.getId(),actualInsertIntoDbPositiveResult.getId());
-        Assert.assertEquals(expectedInsertIntoDbPositiveResult.getName(),actualInsertIntoDbPositiveResult.getName());
-        Assert.assertEquals(expectedInsertIntoDbPositiveResult.getSurname(),expectedInsertIntoDbPositiveResult.getSurname());
-        Assert.assertEquals(expectedInsertIntoDbPositiveResult.getSalary(),actualInsertIntoDbPositiveResult.getSalary(),2);
+    @Test
+    public void insertIntoDbPositiveTest() {
+        objInsertIntoDbPositive(expectedInsertIntoDbPositiveResult, actualInsertIntoDbPositiveResult);
     }
 
-    public void objCreateRecordPositive(Employee expectedCreatePositiveResult, Employee actualCreatePositiveResult) {
-        Assert.assertEquals(expectedCreatePositiveResult.getId(), actualCreatePositiveResult.getId());
-        Assert.assertEquals(expectedCreatePositiveResult.getName(), actualCreatePositiveResult.getName());
-        Assert.assertEquals(expectedCreatePositiveResult.getSurname(), actualCreatePositiveResult.getSurname());
-        Assert.assertEquals(expectedCreatePositiveResult.getSalary(), actualCreatePositiveResult.getSalary(), 2);
+    @Test
+    public void insertIntoDbNegativeTest() {
+        objInsertIntoDbNegative(expectedInsertIntoDbNegativeResult, actualInsertIntoDbNegativeResult);
+    }
+
+    //delete test
+    @Test
+    public void deleteDataPositiveTest() {
+        Assert.assertNotEquals(expectedDeleteRecordFromDbPositiveResult, actualDeleteRecordFromDbPositiveResult);
+
+    }
+
+
+    public void deleteById(int id) {
+        try {
+            String query = "DELETE FROM employee WHERE id = ?";
+            Connection connection = DriverManager.getConnection(URL, "root", "");
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, id);
+            statement.executeUpdate();
+
+            connection.close();
+            statement.close();
+        } catch (SQLException e) {
+            System.out.println("Error while deleting " + e.getMessage());
+        }
+    }
+
+    public void objInsertIntoDbPositive(Employee expectedInsertIntoDbPositiveResult, Employee actualInsertIntoDbPositiveResult) {
+        Assert.assertEquals(expectedInsertIntoDbPositiveResult.getId(), actualInsertIntoDbPositiveResult.getId());
+        Assert.assertEquals(expectedInsertIntoDbPositiveResult.getName(), actualInsertIntoDbPositiveResult.getName());
+        Assert.assertEquals(expectedInsertIntoDbPositiveResult.getSurname(), expectedInsertIntoDbPositiveResult.getSurname());
+        Assert.assertEquals(expectedInsertIntoDbPositiveResult.getSalary(), actualInsertIntoDbPositiveResult.getSalary(), 2);
+    }
+
+    public void objInsertIntoDbNegative(Employee expectedInsertIntoDbNegativeResult, Employee actualInsertIntoDbNegativeResult) {
+        Assert.assertNotEquals(expectedInsertIntoDbNegativeResult.getId(), actualInsertIntoDbNegativeResult.getId());
+        Assert.assertNotEquals(expectedInsertIntoDbNegativeResult.getName(), actualInsertIntoDbNegativeResult.getName());
+        Assert.assertNotEquals(expectedInsertIntoDbNegativeResult.getSurname(), actualInsertIntoDbNegativeResult.getSurname());
+        Assert.assertNotEquals(expectedInsertIntoDbNegativeResult.getSalary(), actualInsertIntoDbNegativeResult.getSalary(), 2);
+    }
+
+    public void objGetRecordFromDbPositive(Employee expected, Employee actual) {
+        Assert.assertEquals(expected.getId(), actual.getId());
+        Assert.assertEquals(expected.getName(), actual.getName());
+        Assert.assertEquals(expected.getSurname(), actual.getSurname());
+        Assert.assertEquals(expected.getSalary(), actual.getSalary(), 2);
+    }
+
+    public void objGetRecordFromDbNegative(Employee expected, Employee actual) {
+        Assert.assertNotEquals(expected.getId(), actual.getId());
+        Assert.assertNotEquals(expected.getName(), actual.getName());
+        Assert.assertNotEquals(expected.getSurname(), actual.getSurname());
+        Assert.assertNotSame(expected.getSalary(), actual.getSalary());
+
     }
 
     public boolean connectToDbPositive() {
